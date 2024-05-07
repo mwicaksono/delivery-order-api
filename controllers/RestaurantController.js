@@ -25,24 +25,62 @@ async function getRestaurantById(req, res) {
 
 async function save(req, res) {
     const masterRestaurant = new MasterRestaurant(
-        req.body.restaurantId,
+        null,
         req.body.name,
         req.body.address,
         req.body.phoneNumber,
-        req.body.useYn 
+        req.body.useYn
     );
-
+    let result = null;
     try {
-        await masterRestaurant.save();
+        const restaurantData = await masterRestaurant.save();
+        result = restaurantData;
     } catch (error) {
         res.send(error)
     }
 
     return res.status(200).json({
-        result: 'created'
+        result: result
+    });
+}
+
+async function destroy(req, res) {
+    const masterRestaurant = new MasterRestaurant(req.body.restaurantId);
+    let result = null;
+    try {
+        const restaurantData = await masterRestaurant.destroy();
+        result = restaurantData;
+    } catch (error) {
+        res.send(error)
+    }
+
+    return res.status(200).json({
+        result: result
+    });
+}
+
+async function update(req, res) {
+    const masterRestaurant = new MasterRestaurant(
+        req.body.restaurantId,
+        req.body.name,
+        req.body.address,
+        req.body.phoneNumber,
+        req.body.useYn
+    );
+
+    let result = null;
+    try {
+        const restaurantData = await masterRestaurant.update();
+        result = restaurantData;
+    } catch (error) {
+        res.send(error)
+    }
+
+    return res.status(200).json({
+        result: result
     });
 }
 
 module.exports = {
-    getRestaurants, getRestaurantById, save
+    getRestaurants, getRestaurantById, save, destroy, update
 }

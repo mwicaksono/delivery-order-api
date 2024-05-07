@@ -46,6 +46,27 @@ class MasterRestaurant {
         });
         return result;
     }
+
+    async update() {
+        const result = await db.getDb().collection('masterRestaurant').updateOne({
+            restaurantId: this.restaurantId
+        }, {
+            $set: {
+                name: this.name,
+                address: this.address,
+                phoneNumber: this.phoneNumber,
+                useYn: this.useYn,
+            }
+        });
+        return result;
+    }
+
+    async destroy() {
+        const result = await db.getDb().collection('masterRestaurant').deleteOne({
+            restaurantId: this.restaurantId
+        });
+        return result;
+    }
 }
 
 module.exports = MasterRestaurant
