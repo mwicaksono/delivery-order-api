@@ -16,6 +16,36 @@ class MasterRestaurant {
     getRestaurantById(restaurantId) {
         return db.getDb().collection('masterRestaurant').findOne({ restaurantId });
     }
+
+    async getLatestRestaurantId() {
+        const result = await db.getDb().collection('masterRestaurant').findOne({}, { sort: { restaurantId: -1 } })
+            .then((latestRestaurant) => {
+                let nextRestaurantId;
+                if (!latestRestaurant) {
+                    nextRestaurantId = 'RES001';
+                } else {
+                    const latestRestaurantId = latestRestaurant.restaurantId
+                    const numericPart = parseInt(latestRestaurantId.substring(3));
+                    nextRestaurantId = 'RES' + ('000' + (numericPart + 1)).slice(-3);
+                }
+                return nextRestaurantId;
+            })
+
+        return result;
+
+    }
+
+    async save() {
+        const restaurantId = await this.getLatestRestaurantId()
+        const result = await db.getDb().collection('masterRestaurant').insertOne({
+            restaurantId: restaurantId,
+            name: this.name,
+            address: this.address,
+            phoneNumber: this.phoneNumber,
+            useYn: this.useYn
+        });
+        return result;
+    }
 }
 
 module.exports = MasterRestaurant

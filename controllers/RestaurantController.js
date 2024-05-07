@@ -23,6 +23,26 @@ async function getRestaurantById(req, res) {
     });
 }
 
+async function save(req, res) {
+    const masterRestaurant = new MasterRestaurant(
+        req.body.restaurantId,
+        req.body.name,
+        req.body.address,
+        req.body.phoneNumber,
+        req.body.useYn 
+    );
+
+    try {
+        await masterRestaurant.save();
+    } catch (error) {
+        res.send(error)
+    }
+
+    return res.status(200).json({
+        result: 'created'
+    });
+}
+
 module.exports = {
-    getRestaurants, getRestaurantById
+    getRestaurants, getRestaurantById, save
 }

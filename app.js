@@ -5,6 +5,7 @@ const db = require('./data/database');
 
 const restaurantRoutes = require('./routes/RestaurantRoutes');
 
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(restaurantRoutes);
 
