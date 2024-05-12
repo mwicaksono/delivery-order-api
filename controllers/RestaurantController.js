@@ -1,30 +1,36 @@
-const MasterRestaurant = require('../models/MasterRestaurant');
+const RestaurantModel = require('../models/Restaurant');
 async function getRestaurants(req, res) {
-    const masterRestaurant = new MasterRestaurant();
-    const restaurants = await masterRestaurant.getRestaurants()
+    const Restaurant = new RestaurantModel();
+    const restaurants = await Restaurant.getRestaurants()
     return res.json({
         "result": restaurants
     });
 }
 
 async function getRestaurantById(req, res) {
-    const restaurantId = req.params.id;
-    const masterRestaurant = new MasterRestaurant();
-    const restaurant = await masterRestaurant.getRestaurantById(restaurantId);
+    try {
+        const restaurantId = req.params.id;
+        const Restaurant = new RestaurantModel();
+        const restaurantData = await Restaurant.getRestaurantById(restaurantId);
 
-    if (!restaurant) {
-        return res.status(404).json({
-            message: "Restaurant not found"
+        if (!restaurantData) {
+            return res.status(404).json({
+                message: "Restaurant not found"
+            });
+        }
+
+        return res.status(200).json({
+            result: restaurantData
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: 'Internal Server Error'
         });
     }
-
-    return res.status(200).json({
-        result: restaurant
-    });
 }
 
 async function save(req, res) {
-    const masterRestaurant = new MasterRestaurant(
+    const Restaurant = new RestaurantModel(
         null,
         req.body.name,
         req.body.address,
@@ -33,7 +39,7 @@ async function save(req, res) {
     );
     let result = null;
     try {
-        const restaurantData = await masterRestaurant.save();
+        const restaurantData = await Restaurant.save();
         result = restaurantData;
     } catch (error) {
         res.send(error)
@@ -45,7 +51,7 @@ async function save(req, res) {
 }
 
 async function destroy(req, res) {
-    const masterRestaurant = new MasterRestaurant(req.body.restaurantId);
+    const Restaurant = new RestaurantModel(req.body.restaurantId);
     let result = null;
     try {
         const restaurantData = await masterRestaurant.destroy();
@@ -60,7 +66,7 @@ async function destroy(req, res) {
 }
 
 async function update(req, res) {
-    const masterRestaurant = new MasterRestaurant(
+    const Restaurant = new RestaurantModel(
         req.body.restaurantId,
         req.body.name,
         req.body.address,

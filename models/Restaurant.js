@@ -1,6 +1,6 @@
 const db = require('../data/database');
 
-class MasterRestaurant {
+class Restaurant {
     constructor(restaurantId = null, name = null, address = null, phoneNumber = null, useYn = null) {
         this.restaurantId = restaurantId;
         this.name = name;
@@ -69,4 +69,4 @@ class MasterRestaurant {
     }
 }
 
-module.exports = MasterRestaurant
+module.exports = Restaurant
