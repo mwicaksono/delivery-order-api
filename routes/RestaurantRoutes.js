@@ -6,7 +6,7 @@ router.get('/restaurant', RestaurantController.getRestaurants);
 router.get('/restaurant/:id', RestaurantController.getRestaurantById);
 
 router.post('/restaurant', RestaurantController.save);
-router.delete('/restaurant/destroy', RestaurantController.destroy);
-router.patch('/restaurant/update', RestaurantController.update);
+router.patch('/restaurant', RestaurantController.update);
+router.delete('/restaurant', RestaurantController.destroy);
 
 module.exports = router;

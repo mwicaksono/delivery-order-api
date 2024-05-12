@@ -35,6 +35,7 @@ class Restaurant {
 
     }
 
+
     async save() {
         const restaurantId = await this.getLatestRestaurantId()
         const result = await db.getDb().collection('masterRestaurant').insertOne({
@@ -44,7 +45,10 @@ class Restaurant {
             phoneNumber: this.phoneNumber,
             useYn: this.useYn
         });
-        return result;
+        return {
+            restaurantId: restaurantId,
+            result
+        };
     }
 
     async update() {
@@ -65,7 +69,21 @@ class Restaurant {
         const result = await db.getDb().collection('masterRestaurant').deleteOne({
             restaurantId: this.restaurantId
         });
-        return result;
+
+        if (result.deletedCount === 0) {
+            return {
+                status: false,
+                message: 'Restaurant ID not found',
+                restaurantId: null
+            };
+        }
+
+        return {
+            status: true,
+            message: `Restaurant (${this.restaurantId}) deleted`,
+            result,
+            restaurantId: this.restaurantId
+        };
     }
 }
 
