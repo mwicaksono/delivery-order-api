@@ -4,10 +4,12 @@ const app = express();
 const db = require('./data/database');
 
 const restaurantRoutes = require('./routes/RestaurantRoutes');
+const MenuItemRoutes = require('./routes/MenuItemRoutes');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(restaurantRoutes);
+app.use(MenuItemRoutes);
 
 const port = process.env.PORT || 3000;
 

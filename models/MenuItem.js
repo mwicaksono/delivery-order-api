@@ -10,12 +10,12 @@ class MenuItem {
     }
 
 
-    getMenuItems() {
-        return db.getDb().collection('menuItem').find({ restaurantId: this.restaurantId }).toArray();
+    getMenuItems(restaurantId) {
+        return db.getDb().collection('menuItems').find({ restaurantId }).toArray();
     }
 
-    getMenuItemById(restaurantId, menuId) {
-        return db.getDb().collection('menuItem').findOne({ restaurantId });
+    getMenuItem(restaurantId, menuId) {
+        return db.getDb().collection('menuItems').findOne({ restaurantId, menuId });
     }
 }
 
