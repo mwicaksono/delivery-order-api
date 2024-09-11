@@ -17,6 +17,22 @@ class MenuItem {
     getMenuItem(restaurantId, menuId) {
         return db.getDb().collection('menuItems').findOne({ restaurantId, menuId });
     }
+
+    async save() {
+        const result = await db.getDb().collection('menuItems').insertOne({
+            restaurantId: this.restaurantId,
+            menuId: 'MENUTEST',
+            name: this.name,
+            price: this.price,
+            description: this.description,
+            useYn: this.useYn
+        });
+        return {
+            restaurantId: this.restaurantId,
+            menuId: menuId,
+            result
+        };
+    }
 }
 
 module.exports = MenuItem;
