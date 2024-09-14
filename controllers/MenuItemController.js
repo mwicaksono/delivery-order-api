@@ -85,10 +85,49 @@ async function save(req, res) {
     }
 }
 
+async function destroy(req, res) {
+    const MenuItem = new MenuItemModel();
+    const restaurantId = req.body.restaurantId;
+    const menuId = req.body.menuId;
 
+    if (!restaurantId ||
+        !menuId
+    ) {
+        return res.status(400).json({
+            status: false,
+            message: 'Restaurant ID & Menu ID field is required.',
+            statusCode: 400
+        });
+    }
+
+    const menuItemData = await MenuItem.getMenuItem(restaurantId, menuId);
+
+    if (!menuItemData) {
+        return res.status(400).json({
+            message: 'Menu Not Found'
+        });
+    }
+
+    let result;
+    try {
+        const resultDelete = await MenuItem.destroy(restaurantId, menuId);
+        result = resultDelete;
+    } catch (error) {
+        return res.status(500).json({
+            status: false,
+            message: error
+        })
+    }
+
+    return res.status(200).json({
+        status: true,
+        result: result
+    });
+
+}
 
 
 
 module.exports = {
-    getMenuItems, getMenuItem, save
+    getMenuItems, getMenuItem, save, destroy
 }

@@ -51,6 +51,26 @@ class MenuItem {
             result
         };
     }
+
+    async destroy(restaurantId, menuId) {
+        const result = await db.getDb().collection('menuItems').deleteOne({
+            restaurantId,
+            menuId
+        });
+
+        if (result.deletedCount === 0) {
+            return {
+                status: false,
+                message: 'Menu Not Found'
+            };
+        }
+
+        return {
+            status: true,
+            message: `Menu (${menuId}) deleted`,
+            result
+        }
+    }
 }
 
 module.exports = MenuItem;
