@@ -68,22 +68,26 @@ async function save(req, res) {
         });
     }
 
-    const MenuItem = new MenuItemModel(restaurantId, name, price, description, useYn);
-
-    let result = null
     try {
-        const menuItemData = await MenuItem.save();
-        result = menuItemData;
-    } catch (error) {
-        res.status(500).json({
-            message: error
-        })
-    }
+        const MenuItem = new MenuItemModel(restaurantId, name, price, description, useYn);
 
-    return res.status(200).json({
-        result: result
-    })
+        const menuItemData = await MenuItem.save();
+        return res.status(200).json({
+            result: menuItemData
+        });
+    } catch (error) {
+        console.error("Error saving menu item:", error);
+
+        return res.status(500).json({
+            message: 'Failed to save menu item',
+            error: error.message || 'Internal Server Error'
+        });
+    }
 }
+
+
+
+
 
 module.exports = {
     getMenuItems, getMenuItem, save
