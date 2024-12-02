@@ -3,21 +3,34 @@ const RestaurantModel = require('../models/Restaurant');
 
 async function getRestaurants(req, res) {
     const Restaurant = new RestaurantModel();
-    const restaurants = await Restaurant.getRestaurants()
-    return res.json({
-        "result": restaurants
+    const restaurants = await Restaurant.getRestaurants();
+    if (restaurants.length === 0) {
+        return res.status(404).json({
+            message: "Restaurants not found"
+        });
+    }
+
+    return res.status(200).json({
+        result: restaurants
     });
 }
 
 async function getRestaurantById(req, res) {
     try {
         const restaurantId = req.params.id;
+
+        if (!restaurantId || restaurantId.trim() === '') {
+            return res.status(400).json({
+                message: "Restaurant ID is required."
+            });
+        }
+
         const Restaurant = new RestaurantModel();
         const restaurantData = await Restaurant.getRestaurantById(restaurantId);
 
         if (!restaurantData) {
             return res.status(404).json({
-                message: "Restaurant not found"
+                message: "Restaurant not found."
             });
         }
 
@@ -43,7 +56,7 @@ async function save(req, res) {
         !phoneNumber || !validator.isNumeric(phoneNumber) ||
         !useYn
     ) {
-        return res.status(404).json({
+        return res.status(400).json({
             message: 'Please check input!'
         });
     }
@@ -66,13 +79,22 @@ async function save(req, res) {
     }
 
     return res.status(200).json({
-        result: result,
-        restaurantId: result.restaurantId
+        restaurantId: result.restaurantId,
+        message: 'Restaurant data successfully saved.',
+        result: result
     });
 }
 
 async function destroy(req, res) {
-    const Restaurant = new RestaurantModel(req.body.restaurantId);
+    const restaurantId = req.body.restaurantId;
+
+    const Restaurant = new RestaurantModel(restaurantId);
+    if (!restaurantId || restaurantId.trim() === '') {
+        return res.status(400).json({
+            message: "Restaurant ID is required."
+        });
+    }
+
     let result = null;
     try {
         const restaurantData = await Restaurant.destroy();
@@ -90,8 +112,9 @@ async function destroy(req, res) {
     }
 
     return res.status(200).json({
+        restaurantId: result.restaurantId,
+        message: "Restaurant data successfully deleted.",
         result: result,
-        restaurantId: result.restaurantId
     });
 }
 
