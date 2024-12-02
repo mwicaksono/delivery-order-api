@@ -9,6 +9,23 @@ class MenuItem {
         this.useYn = useYn;
     }
 
+    async getLatestMenuId() {
+        const result = await db.getDb().collection('menuItems').findOne({ restaurantId: this.restaurantId }, { sort: { menuId: -1 } })
+            .then((latestMenuId) => {
+                let nextMenuId;
+                if (!latestMenuId) {
+                    nextMenuId = 'MENU001';
+                } else {
+                    const latestMenuIdId = latestMenuId.menuId
+                    const numericPart = parseInt(latestMenuIdId.substring(4)) + 1;
+                    nextMenuId = 'MENU' + numericPart.toString().padStart(3, '0');
+                }
+                return nextMenuId;
+            })
+
+        return result;
+
+    }
 
     getMenuItems(restaurantId) {
         return db.getDb().collection('menuItems').find({ restaurantId }).toArray();
@@ -16,6 +33,43 @@ class MenuItem {
 
     getMenuItem(restaurantId, menuId) {
         return db.getDb().collection('menuItems').findOne({ restaurantId, menuId });
+    }
+
+    async save() {
+        const menuId = await this.getLatestMenuId()
+        const result = await db.getDb().collection('menuItems').insertOne({
+            restaurantId: this.restaurantId,
+            menuId: menuId,
+            name: this.name,
+            price: this.price,
+            description: this.description,
+            useYn: this.useYn
+        });
+        return {
+            restaurantId: this.restaurantId,
+            menuId: menuId,
+            result
+        };
+    }
+
+    async destroy(restaurantId, menuId) {
+        const result = await db.getDb().collection('menuItems').deleteOne({
+            restaurantId,
+            menuId
+        });
+
+        if (result.deletedCount === 0) {
+            return {
+                status: false,
+                message: 'Menu Not Found'
+            };
+        }
+
+        return {
+            status: true,
+            message: `Menu (${menuId}) deleted`,
+            result
+        }
     }
 }
 
